@@ -56,33 +56,17 @@ if __name__ == "__main__":
     recogn_embeddings = face_recognition.face_encodings(image, face_locations)
     for recogn_embedding in recogn_embeddings:
         face_matrix = face_recognition.compare_faces(embeddings, recogn_embedding)
-        
-        # Loop over the facial embeddings
-        kubabryl = 0
-        patrykszelag = 0
-        for name, match in zip(names, face_matrix):
-         #   Attempt to match each face in the input image to our known encodings
-           if match == True:
-                if name == 'kubabryl':
-                    kubabryl += 1
-                elif name == 'patrykszelag':
-                    patrykszelag +=1
+        name = "Unknown"
 
-        # name_list = [kubabryl, patrykszelag]  
-
-        # if sum(name_list) == 0:
-        #     pred = "Unknown"
-        # else:
-        #     name_list.sort()
-        #     pred = name_list[-1]    
-        if kubabryl > patrykszelag:
-            pred = 'Kuba Bryl'        
-        elif patrykszelag >kubabryl:
-            pred = "Patryk Szelag"
-        else:
-            pred = 'Unknown'
-            
-        preds.append(pred)
+        if True in face_matrix:
+            matchedIdxs = [i for (i, b) in enumerate(face_matrix) if b]
+            counts = {}
+            for i in matchedIdxs:
+                name = face_data["names"][i]
+                counts[name] = counts.get(name, 0) + 1
+            name = max(counts, key = counts.get)
+        preds.append(name)
+       
     
     #   Find the indexes of all matched faces then count how many times each person was matched
     #   to detected face - assign their name to the face. If nothing was matched, assign "unknown"
