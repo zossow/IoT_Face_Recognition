@@ -1,0 +1,5 @@
+Nauczanie modelu, pierwsze co nalezy uruchomic (na serwerze bedzie), oprocz tego potrzebuje zdjec:
+python3 encode.py -i Pictures/ -f file
+
+Skrypt, ktory uruchamia kamere i rozpoznaje potem twarze (na malince, potrzebuje folderu haar_cascades i pliku file, ktory tworzy plik encode.py):
+python3 recpython3 recognize_faces_camera.py -c haar_cascades/haarcascade_frontalface_default.xml -f fileognize_faces_camera.py -c haar_cascades/haarcascade_frontalface_default.xml -f file
