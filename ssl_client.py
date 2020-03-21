@@ -10,6 +10,7 @@ import cv2
 
 class FaceRecognitionCameraApp(threading.Thread):
     def __init__(self, args):
+        threading.Thread.__init__(self)
         self.haar_cascade_path = args.haar_cascade
         self.face_encodings_filepath = args.face_encodings
 
