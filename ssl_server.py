@@ -38,7 +38,7 @@ class ServerSocketApp(threading.Thread):
 
 def main():
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-    context.load_cert_chain('/root/ca.pem', '/root/ca.key')
+    context.load_cert_chain('ca.pem', 'ca.key')
 
     host = '0'
     port = 15007
