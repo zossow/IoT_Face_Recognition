@@ -1,51 +1,37 @@
 import socket
 import threading
-import sys
 import ssl
 
 
-# Wait for incoming data from server
-# decode is used to turn the message in bytes to a string
-def receive(socket, signal):
-    while signal:
-        try:
-            while True:
-                pass
-            data = socket.recv(32)
-            print(str(data.decode("utf-8")))
-        except:
-            print("You have been disconnected from the server")
-            signal = False
-            break
+class ClientSocketApp(threading.Thread):
+    def __init__(self, _context, _host, _port):
+        threading.Thread.__init__(self)
+        self.context = _context
+        self.host = _host
+        self.port = _port
+
+    def run(self):
+        with socket.create_connection((self.host, self.port)) as sock:
+            with self.context.wrap_socket(sock, server_hostname=self.host) as ssock:
+                print(ssock.version())
+                while True:
+                    pass
+                    # TODO tutaj bedzie odbieranie nowego modelu od serwera
+                    # i aktualizowanie modelu do nowego watku
 
 
-# Get host and port
-hostname = 'localhost'
-port = 51000
+def main():
+    context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+    context.load_verify_locations('client.cer')
+    context.check_hostname = False
+    context.verify_mode = ssl.CERT_NONE
 
-# PROTOCOL_TLS_CLIENT requires valid cert chain and hostname
-context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-context.load_verify_locations('client.cer')
-context.check_hostname = False
-context.verify_mode = ssl.CERT_NONE
+    host = 'localhost'
+    port = 51000
 
-# Attempt connection to server
-try:
-    with socket.create_connection((hostname, port)) as sock:
-        with context.wrap_socket(sock, server_hostname=hostname) as ssock:
-            print(ssock.version())
-except:
-    print("Could not make a connection to the server")
-    input("Press enter to quit")
-    sys.exit(0)
+    clientApp = ClientSocketApp(context, host, port)
+    clientApp.start()
+    clientApp.join()
 
-# Create new thread to wait for data
-receiveThread = threading.Thread(target = receive, args = (sock, True))
-receiveThread.start()
 
-# Send data to server
-# str.encode is used to turn the string message into bytes so it can be sent across the network
-while True:
-    message = input()
-    sock.sendall(str.encode(message))
-
+main()
