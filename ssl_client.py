@@ -38,8 +38,9 @@ class FaceRecognitionCameraApp(threading.Thread):
             # Detect faces in the grayscale image using Haar cascade classifier
             # cascadeClassifier = cv2.CascadeClassifier(self.haar_cascade_path)
             print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: face_locations start")
-            face_locations = cascadeClassifier.detectMultiScale(image_gray)
+            # face_locations = cascadeClassifier.detectMultiScale(image_gray)
             # face_locations = cascadeClassifier.detectMultiScale(image_gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
+            face_locations = cascadeClassifier.detectMultiScale(image_gray, scaleFactor=2, minNeighbors=4, minSize=(40, 40), flags=cv2.CASCADE_SCALE_IMAGE)
             print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: face_locations end")
 
             # Translate OpenCV coordinates from (x, y, w, h) to (top, right, bottom, left)
