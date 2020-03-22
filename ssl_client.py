@@ -22,10 +22,10 @@ class FaceRecognitionCameraApp(threading.Thread):
         with open(self.haar_cascade_path, "rb") as file:
             haar_data = file.read()
 
-        stream = imutils.video.VideoStream(src=0, usePiCamera=False).start()
+        stream = imutils.video.VideoStream(src=0, usePiCamera=True).start()
         # Load image from image file
         #    image = cv2.imread(image_file_path)
-        while (1):
+        while True:
             image = stream.read()
             # Convert the input image from BGR to grayscale (for face detection - Haar cascade classifier)
             # and from BGR to RGB (for face recognition - face_recognition package)
@@ -69,7 +69,7 @@ class FaceRecognitionCameraApp(threading.Thread):
             # boxes are locations of faces detected by Haar classifier and translated
             # to different format and names are the corresponding names assigned in the
             # previous step
-            #
+
             for ((top, right, bottom, left), pred) in zip(face_locations, preds):
                 #   Draw rectangles around the detected faces and display a person's name
                 image = cv2.rectangle(image, (left, top), (right, bottom), (0, 255, 0), 2)
@@ -102,7 +102,7 @@ class ClientSocketApp(threading.Thread):
                 while True:
                     pass
                     # TODO tutaj bedzie odbieranie nowego modelu od serwera
-                    # i aktualizowanie modelu do nowego watku
+                    # TODO i aktualizowanie modelu do nowego watku
 
 
 def parse_args():
