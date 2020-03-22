@@ -19,10 +19,10 @@ class FaceRecognitionCameraApp(threading.Thread):
         # cascade classifier for face detection
         with open(self.face_encodings_filepath, "rb") as file:
             face_data = pickle.loads(file.read(), encoding='latin1')
-        with open(self.haar_cascade_path, "rb") as file:
-            haar_data = file.read()
+        #with open(self.haar_cascade_path, "rb") as file:
+        #    haar_data = file.read()
 
-        stream = imutils.video.VideoStream(src=0, usePiCamera=False).start()
+        stream = imutils.video.VideoStream(src=0, usePiCamera=True).start()
         # Load image from image file
         #    image = cv2.imread(image_file_path)
         while True:
@@ -30,7 +30,7 @@ class FaceRecognitionCameraApp(threading.Thread):
             # Convert the input image from BGR to grayscale (for face detection - Haar cascade classifier)
             # and from BGR to RGB (for face recognition - face_recognition package)
             image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            #image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             # Detect faces in the grayscale image using Haar cascade classifier
             cascadeClassifier = cv2.CascadeClassifier(self.haar_cascade_path)
             face_locations = cascadeClassifier.detectMultiScale(image_gray, scaleFactor=1.1, minNeighbors=5,
@@ -60,7 +60,7 @@ class FaceRecognitionCameraApp(threading.Thread):
                         counts[name] = counts.get(name, 0) + 1
                     name = max(counts, key=counts.get)
                 preds.append(name)
-                print("See ", name)
+                print("See:", name)
 
             #   Find the indexes of all matched faces then count how many times each person was matched
             #   to detected face - assign their name to the face. If nothing was matched, assign "unknown"
