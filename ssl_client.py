@@ -22,7 +22,7 @@ class FaceRecognitionCameraApp(threading.Thread):
         with open(self.haar_cascade_path, "rb") as file:
             haar_data = file.read()
 
-        stream = imutils.video.VideoStream(src=0, usePiCamera=True).start()
+        stream = imutils.video.VideoStream(src=0, usePiCamera=False).start()
         # Load image from image file
         #    image = cv2.imread(image_file_path)
         while True:
@@ -43,7 +43,7 @@ class FaceRecognitionCameraApp(threading.Thread):
             # Compute the facial embeddings for each face using translated coordinates and
             # RGB image. Be aware that face_recognition.face_encodings() function returns
             # returns a list!
-            names = face_data["names"]
+            #names = face_data["names"]
             embeddings = face_data["encodings"]
 
             preds = []
@@ -60,6 +60,7 @@ class FaceRecognitionCameraApp(threading.Thread):
                         counts[name] = counts.get(name, 0) + 1
                     name = max(counts, key=counts.get)
                 preds.append(name)
+                print("See ", name)
 
             #   Find the indexes of all matched faces then count how many times each person was matched
             #   to detected face - assign their name to the face. If nothing was matched, assign "unknown"
@@ -70,13 +71,13 @@ class FaceRecognitionCameraApp(threading.Thread):
             # to different format and names are the corresponding names assigned in the
             # previous step
 
-            for ((top, right, bottom, left), pred) in zip(face_locations, preds):
+            #for ((top, right, bottom, left), pred) in zip(face_locations, preds):
                 #   Draw rectangles around the detected faces and display a person's name
-                image = cv2.rectangle(image, (left, top), (right, bottom), (0, 255, 0), 2)
-                image = cv2.putText(image, pred, (left, top), cv2.FONT_HERSHEY_SIMPLEX, 5, (255, 0, 0), 7)
+                #image = cv2.rectangle(image, (left, top), (right, bottom), (0, 255, 0), 2)
+                #image = cv2.putText(image, pred, (left, top), cv2.FONT_HERSHEY_SIMPLEX, 5, (255, 0, 0), 7)
 
-            image = cv2.resize(image, (1000, 800))
-            im = cv2.imshow('asda', image)
+            #image = cv2.resize(image, (1000, 800))
+            #im = cv2.imshow('asda', image)
             f = cv2.waitKey(33)
             if f == 27:
                 break
