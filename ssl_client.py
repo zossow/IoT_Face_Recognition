@@ -26,6 +26,7 @@ class FaceRecognitionCameraApp(threading.Thread):
         stream = imutils.video.VideoStream(src=0, usePiCamera=False).start()
         # Load image from image file
         #    image = cv2.imread(image_file_path)
+        cascadeClassifier = cv2.CascadeClassifier(self.haar_cascade_path)
         while True:
             image = stream.read()
             # Convert the input image from BGR to grayscale (for face detection - Haar cascade classifier)
@@ -33,13 +34,13 @@ class FaceRecognitionCameraApp(threading.Thread):
             image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             #image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             # Detect faces in the grayscale image using Haar cascade classifier
-            cascadeClassifier = cv2.CascadeClassifier(self.haar_cascade_path)
+            # cascadeClassifier = cv2.CascadeClassifier(self.haar_cascade_path)
             face_locations = cascadeClassifier.detectMultiScale(image_gray, scaleFactor=1.1, minNeighbors=5,
                                                                 minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
 
             # Translate OpenCV coordinates from (x, y, w, h) to (top, right, bottom, left)
             # Translation formula: (top, right, bottom, left) = (y, x + w, y + h, x)
-            face_locations = [(y, x + w, y + h, x) for x, y, w, h in face_locations]
+            # face_locations = [(y, x + w, y + h, x) for x, y, w, h in face_locations]
 
             # Compute the facial embeddings for each face using translated coordinates and
             # RGB image. Be aware that face_recognition.face_encodings() function returns
@@ -61,7 +62,7 @@ class FaceRecognitionCameraApp(threading.Thread):
                         counts[name] = counts.get(name, 0) + 1
                     name = max(counts, key=counts.get)
                 preds.append(name)
-                print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: See: ", name)
+                print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: See:", name)
 
             #   Find the indexes of all matched faces then count how many times each person was matched
             #   to detected face - assign their name to the face. If nothing was matched, assign "unknown"
