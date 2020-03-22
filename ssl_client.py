@@ -20,36 +20,26 @@ class FaceRecognitionCameraApp(threading.Thread):
         print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: Run start")
         # Load the known faces and embeddings along with OpenCV's Haar
         # cascade classifier for face detection
-        print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: pickle.loads start")
         with open(self.face_encodings_filepath, "rb") as file:
             face_data = pickle.loads(file.read(), encoding='latin1')
-        print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: pickle.loads end")
         #with open(self.haar_cascade_path, "rb") as file:
         #    haar_data = file.read()
-        print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: imutils.video.VideoStream start")
+
         stream = imutils.video.VideoStream(src=0, usePiCamera=False).start()
-        print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: imutils.video.VideoStream end")
         # Load image from image file
         #    image = cv2.imread(image_file_path)
-        print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: cascadeClassifier start")
         cascadeClassifier = cv2.CascadeClassifier(self.haar_cascade_path)
-        print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: cascadeClassifier end")
         while True:
-            print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: stream.start start")
             image = stream.read()
-            print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: stream.start end")
             # Convert the input image from BGR to grayscale (for face detection - Haar cascade classifier)
             # and from BGR to RGB (for face recognition - face_recognition package)
-            print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: image_gray start")
             image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: image_gray end")
             #image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             # Detect faces in the grayscale image using Haar cascade classifier
             # cascadeClassifier = cv2.CascadeClassifier(self.haar_cascade_path)
             print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: face_locations start")
             face_locations = cascadeClassifier.detectMultiScale(image_gray)
-            #face_locations = cascadeClassifier.detectMultiScale(image_gray, scaleFactor=1.1, minNeighbors=5,
-            #                                                    minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
+            # face_locations = cascadeClassifier.detectMultiScale(image_gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
             print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: face_locations end")
 
             # Translate OpenCV coordinates from (x, y, w, h) to (top, right, bottom, left)
@@ -76,7 +66,7 @@ class FaceRecognitionCameraApp(threading.Thread):
                         counts[name] = counts.get(name, 0) + 1
                     name = max(counts, key=counts.get)
                 preds.append(name)
-                print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: !!!!!See:", name)
+                print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp:!See:", name)
 
             #   Find the indexes of all matched faces then count how many times each person was matched
             #   to detected face - assign their name to the face. If nothing was matched, assign "unknown"
@@ -133,12 +123,17 @@ def parse_args():
 
 
 def main():
+    print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-Main: start")
+    print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-Main: parse_args start")
     cameraArgs = parse_args()
+    print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-Main: parse_args end")
 
+    print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-Main: context start")
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
     context.load_verify_locations('client.cer')
     context.check_hostname = False
     context.verify_mode = ssl.CERT_NONE
+    print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-Main: context end")
 
     host = 'localhost'
     port = 51000
