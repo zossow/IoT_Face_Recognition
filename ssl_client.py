@@ -7,6 +7,7 @@ import argparse
 import imutils
 import pickle
 import cv2
+import time
 
 class FaceRecognitionCameraApp(threading.Thread):
     def __init__(self, args):
@@ -101,7 +102,7 @@ class ClientSocketApp(threading.Thread):
             with self.context.wrap_socket(sock, server_hostname=self.host) as ssock:
                 print(ssock.version())
                 while True:
-                    pass
+                    time.sleep(10)
                     # TODO tutaj bedzie odbieranie nowego modelu od serwera
                     # TODO i aktualizowanie modelu do nowego watku
 
