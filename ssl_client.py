@@ -40,7 +40,7 @@ class FaceRecognitionCameraApp(threading.Thread):
             print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: face_locations start")
             # face_locations = cascadeClassifier.detectMultiScale(image_gray)
             # face_locations = cascadeClassifier.detectMultiScale(image_gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
-            face_locations = cascadeClassifier.detectMultiScale(image_gray, scaleFactor=1.5, minNeighbors=5, minSize=(20, 20), flags=cv2.CASCADE_SCALE_IMAGE)
+            face_locations = cascadeClassifier.detectMultiScale(image_gray, scaleFactor=1.3, minNeighbors=5, minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
             print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: face_locations end")
 
             # Translate OpenCV coordinates from (x, y, w, h) to (top, right, bottom, left)
