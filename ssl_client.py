@@ -18,9 +18,9 @@ class FaceRecognitionCameraApp(threading.Thread):
         # Load the known faces and embeddings along with OpenCV's Haar
         # cascade classifier for face detection
         with open(self.face_encodings_filepath, "rb") as file:
-            face_data = pickle.loads(file.read())
+            face_data = pickle.loads(file.read().decode('utf-8'))
         with open(self.haar_cascade_path, "rb") as file:
-            haar_data = file.read()
+            haar_data = file.read().decode('utf-8')
 
         stream = imutils.video.VideoStream(src=0, usePiCamera=False).start()
         # Load image from image file
