@@ -7,7 +7,7 @@ import argparse
 import imutils
 import pickle
 import cv2
-import time
+import time, datetime
 
 class FaceRecognitionCameraApp(threading.Thread):
     def __init__(self, args):
@@ -23,7 +23,7 @@ class FaceRecognitionCameraApp(threading.Thread):
         #with open(self.haar_cascade_path, "rb") as file:
         #    haar_data = file.read()
 
-        stream = imutils.video.VideoStream(src=0, usePiCamera=True).start()
+        stream = imutils.video.VideoStream(src=0, usePiCamera=False).start()
         # Load image from image file
         #    image = cv2.imread(image_file_path)
         while True:
@@ -102,6 +102,8 @@ class ClientSocketApp(threading.Thread):
             with self.context.wrap_socket(sock, server_hostname=self.host) as ssock:
                 print(ssock.version())
                 while True:
+                    print(datetime.datetime.now().strftime("%H:%M:%S"))
+                    print("Thread-ClientSocketApp: Sleeping for 10s")
                     time.sleep(10)
                     # TODO tutaj bedzie odbieranie nowego modelu od serwera
                     # TODO i aktualizowanie modelu do nowego watku
