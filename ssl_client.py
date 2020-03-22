@@ -47,13 +47,14 @@ class FaceRecognitionCameraApp(threading.Thread):
             # Detect faces in the grayscale image using Haar cascade classifier
             # cascadeClassifier = cv2.CascadeClassifier(self.haar_cascade_path)
             print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: face_locations start")
-            face_locations = cascadeClassifier.detectMultiScale(image_gray, scaleFactor=1.1, minNeighbors=5,
-                                                                minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
+            face_locations = cascadeClassifier.detectMultiScale(image_gray)
+            #face_locations = cascadeClassifier.detectMultiScale(image_gray, scaleFactor=1.1, minNeighbors=5,
+            #                                                    minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
             print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: face_locations end")
 
             # Translate OpenCV coordinates from (x, y, w, h) to (top, right, bottom, left)
             # Translation formula: (top, right, bottom, left) = (y, x + w, y + h, x)
-            # face_locations = [(y, x + w, y + h, x) for x, y, w, h in face_locations]
+            face_locations = [(y, x + w, y + h, x) for x, y, w, h in face_locations]
 
             # Compute the facial embeddings for each face using translated coordinates and
             # RGB image. Be aware that face_recognition.face_encodings() function returns
@@ -75,7 +76,7 @@ class FaceRecognitionCameraApp(threading.Thread):
                         counts[name] = counts.get(name, 0) + 1
                     name = max(counts, key=counts.get)
                 preds.append(name)
-                print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: See:", name)
+                print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: !!!!!See:", name)
 
             #   Find the indexes of all matched faces then count how many times each person was matched
             #   to detected face - assign their name to the face. If nothing was matched, assign "unknown"
@@ -93,13 +94,13 @@ class FaceRecognitionCameraApp(threading.Thread):
 
             #image = cv2.resize(image, (1000, 800))
             #im = cv2.imshow('asda', image)
-            f = cv2.waitKey(33)
-            if f == 27:
-                break
-            elif f == -1:
-                continue
+            #f = cv2.waitKey(33)
+            #if f == 27:
+            #    break
+            #elif f == -1:
+            #    continue
 
-        cv2.destroyAllWindows()
+        #cv2.destroyAllWindows()
 
         # Display the image to the screen
 
