@@ -61,7 +61,7 @@ class FaceRecognitionCameraApp(threading.Thread):
                         counts[name] = counts.get(name, 0) + 1
                     name = max(counts, key=counts.get)
                 preds.append(name)
-                print("See:", name)
+                print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: See: ", name)
 
             #   Find the indexes of all matched faces then count how many times each person was matched
             #   to detected face - assign their name to the face. If nothing was matched, assign "unknown"
@@ -102,8 +102,7 @@ class ClientSocketApp(threading.Thread):
             with self.context.wrap_socket(sock, server_hostname=self.host) as ssock:
                 print(ssock.version())
                 while True:
-                    print(datetime.datetime.now().strftime("%H:%M:%S"))
-                    print("Thread-ClientSocketApp: Sleeping for 10s")
+                    print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-ClientSocketApp: Sleeping for 10s")
                     time.sleep(10)
                     # TODO tutaj bedzie odbieranie nowego modelu od serwera
                     # TODO i aktualizowanie modelu do nowego watku
