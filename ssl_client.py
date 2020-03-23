@@ -76,7 +76,7 @@ class FaceRecognitionCameraApp(threading.Thread):
             # to different format and names are the corresponding names assigned in the
             # previous step
 
-            '''for ((top, right, bottom, left), pred) in zip(face_locations, preds):
+            for ((top, right, bottom, left), pred) in zip(face_locations, preds):
                 #   Draw rectangles around the detected faces and display a person's name
                 image = cv2.rectangle(image, (left, top), (right, bottom), (0, 255, 0), 2)
                 image = cv2.putText(image, pred, (left, top), cv2.FONT_HERSHEY_SIMPLEX, 5, (255, 0, 0), 7)
@@ -89,7 +89,7 @@ class FaceRecognitionCameraApp(threading.Thread):
             elif f == -1:
                 continue
 
-        cv2.destroyAllWindows()'''
+        cv2.destroyAllWindows()
 
         # Display the image to the screen
 
