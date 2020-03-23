@@ -8,14 +8,26 @@ import datetime
 
 class FirebaseObserverApp(threading.Thread):
     def __init__(self):
-        pass
+        threading.Thread.__init__(self)
         # TODO kod Wiolci
+
+    def run(self):
+        pass
+        # TODO
 
 
 class FaceRecognitionApp(threading.Thread):
-    def __init__(self):
-        pass
+    def __init__(self, _q):
+        threading.Thread.__init__(self)
+        self.q = _q
         # TODO kod Bambo i Zoski
+
+    def run(self):
+        model = 10
+        self.q.put(model)
+        print(datetime.datetime.now().strftime("%H:%M:%S"),
+              "Thread-FaceRecognitionApp: Put model to queue, sleeping for 10s")
+        time.sleep(10)
 
 
 class ServerSocketApp(threading.Thread):
@@ -43,7 +55,7 @@ class ServerSocketApp(threading.Thread):
                           "Thread-ServerSocketApp: Send file to RPi, sleeping for 10s")
                     time.sleep(10)
                     # TODO tutaj jak bedzie nowy model
-                    # to wysle sie go do RPi za pomoca connection.sendfile()
+                    # TODO to wysle sie go do RPi za pomoca connection.sendfile()
 
 
 def main():
@@ -57,6 +69,8 @@ def main():
 
     serverApp = ServerSocketApp(context, host, port, q)
     serverApp.start()
+
+    faceRecognitionModel = FaceRecognitionApp(q)
 
     serverApp.join()
 
