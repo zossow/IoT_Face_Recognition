@@ -1,6 +1,9 @@
 import socket
 import threading
 import ssl
+import queue
+import time
+import datetime
 
 
 class FirebaseObserverApp(threading.Thread):
@@ -16,11 +19,12 @@ class FaceRecognitionApp(threading.Thread):
 
 
 class ServerSocketApp(threading.Thread):
-    def __init__(self, _context, _host, _port):
+    def __init__(self, _context, _host, _port, _q):
         threading.Thread.__init__(self)
         self.context = _context
         self.host = _host
         self.port = _port
+        self.q = _q
 
     def run(self):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0) as sock:
@@ -31,7 +35,13 @@ class ServerSocketApp(threading.Thread):
                 ssock.setblocking(0)
                 print("RPi connection from:", connection.getpeername()[0])
                 while True:
-                    pass
+                    model = self.q.get()
+                    print(datetime.datetime.now().strftime("%H:%M:%S"),
+                          "Thread-ServerSocketApp: Received model from queue")
+                    connection.send(model)
+                    print(datetime.datetime.now().strftime("%H:%M:%S"),
+                          "Thread-ServerSocketApp: Send file to RPi, sleeping for 10s")
+                    time.sleep(10)
                     # TODO tutaj jak bedzie nowy model
                     # to wysle sie go do RPi za pomoca connection.sendfile()
 
@@ -43,8 +53,11 @@ def main():
     host = '0'
     port = 15007
 
-    serverApp = ServerSocketApp(context, host, port)
+    q = queue.Queue()
+
+    serverApp = ServerSocketApp(context, host, port, q)
     serverApp.start()
+
     serverApp.join()
 
 

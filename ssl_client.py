@@ -7,7 +7,9 @@ import argparse
 import imutils
 import pickle
 import cv2
-import time, datetime
+import time
+import datetime
+
 
 class FaceRecognitionCameraApp(threading.Thread):
     def __init__(self, args):
