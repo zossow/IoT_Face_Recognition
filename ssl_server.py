@@ -71,8 +71,10 @@ def main():
     serverApp.start()
 
     faceRecognitionModel = FaceRecognitionApp(q)
+    faceRecognitionModel.start()
 
     serverApp.join()
+    faceRecognitionModel.join()
 
 
 main()
