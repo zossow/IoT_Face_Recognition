@@ -36,9 +36,9 @@ class FaceRecognitionCameraApp(threading.Thread):
             # Detect faces in the grayscale image using Haar cascade classifier
             # cascadeClassifier = cv2.CascadeClassifier(self.haar_cascade_path)
             print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: face_locations start")
-            # face_locations = cascadeClassifier.detectMultiScale(image_gray)
             # face_locations = cascadeClassifier.detectMultiScale(image_gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
-            face_locations = cascadeClassifier.detectMultiScale(image_gray, scaleFactor=1.2, minNeighbors=5, minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
+            face_locations = cascadeClassifier.detectMultiScale(image_gray, scaleFactor=1.25, minNeighbors=5,
+                                                                minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
             print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: face_locations end")
 
             # Translate OpenCV coordinates from (x, y, w, h) to (top, right, bottom, left)
@@ -48,7 +48,7 @@ class FaceRecognitionCameraApp(threading.Thread):
             # Compute the facial embeddings for each face using translated coordinates and
             # RGB image. Be aware that face_recognition.face_encodings() function returns
             # returns a list!
-            #names = face_data["names"]
+            # names = face_data["names"]
             embeddings = face_data["encodings"]
 
             preds = []
@@ -76,7 +76,7 @@ class FaceRecognitionCameraApp(threading.Thread):
             # to different format and names are the corresponding names assigned in the
             # previous step
 
-            for ((top, right, bottom, left), pred) in zip(face_locations, preds):
+            '''for ((top, right, bottom, left), pred) in zip(face_locations, preds):
                 #   Draw rectangles around the detected faces and display a person's name
                 image = cv2.rectangle(image, (left, top), (right, bottom), (0, 255, 0), 2)
                 image = cv2.putText(image, pred, (left, top), cv2.FONT_HERSHEY_SIMPLEX, 5, (255, 0, 0), 7)
@@ -89,7 +89,7 @@ class FaceRecognitionCameraApp(threading.Thread):
             elif f == -1:
                 continue
 
-        cv2.destroyAllWindows()
+        cv2.destroyAllWindows()'''
 
         # Display the image to the screen
 
@@ -119,17 +119,12 @@ def parse_args():
 
 
 def main():
-    print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-Main: start")
-    print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-Main: parse_args start")
     cameraArgs = parse_args()
-    print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-Main: parse_args end")
 
-    print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-Main: context start")
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
     context.load_verify_locations('client.cer')
     context.check_hostname = False
     context.verify_mode = ssl.CERT_NONE
-    print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-Main: context end")
 
     host = 'localhost'
     port = 51000
