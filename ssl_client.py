@@ -109,7 +109,7 @@ class ClientSocketApp(threading.Thread):
                 print(ssock.version())
                 while True:
                     model = ssock.recv()
-                    print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-ClientSocketApp: Received model from server:", model)
+                    print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-ClientSocketApp: Received model from server:", int.from_bytes(model))
                     #time.sleep(10)
                     # TODO tutaj bedzie odbieranie nowego modelu od serwera
                     # TODO i aktualizowanie modelu do nowego watku

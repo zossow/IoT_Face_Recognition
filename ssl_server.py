@@ -25,7 +25,7 @@ class FaceRecognitionApp(threading.Thread):
     def run(self):
         while True:
             # TODO kod Bambo i Zoski
-            model = random.random()
+            model = random.randint(0, 100)
             self.q.put(model)
             print(datetime.datetime.now().strftime("%H:%M:%S"),
                 "Thread-FaceRecognitionApp: Put ", model,  " to queue, sleeping for 10s")
