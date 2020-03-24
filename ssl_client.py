@@ -83,24 +83,24 @@ class ClientSocketApp(threading.Thread):
                 print(ssock.version())
                 while True:
                     #model = ssock.recv()
-                    model = self.recvall(ssock)
+                    model = recvall(ssock)
                     print(hashlib.sha224(model).hexdigest())
 
                     print(datetime.datetime.now().strftime("%H:%M:%S"),
-                          "Thread-ClientSocketApp: Received model from server")
-                    #time.sleep(10)
+                          "Thread-ClientSocketApp: Received model from server, sleeping for 10s")
+                    time.sleep(10)
                     # TODO tutaj bedzie odbieranie nowego modelu od serwera
                     # TODO i aktualizowanie modelu do nowego watku
 
-    def recvall(self, sock):
-        data = b''
-        bufsize = 4096
-        while True:
-            packet = sock.recv(bufsize)
-            data += packet
-            if len(packet) < bufsize:
-                break
-        return data
+def recvall(self, sock):
+    data = b''
+    bufsize = 4096
+    while True:
+        packet = sock.recv(bufsize)
+        data += packet
+        if len(packet) < bufsize:
+            break
+    return data
 
 def parse_args():
     parser = argparse.ArgumentParser()
