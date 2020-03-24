@@ -56,10 +56,10 @@ class FaceRecognitionApp(threading.Thread):
             print(datetime.datetime.now().strftime("%H:%M:%S"),
                   "Thread-FaceRecognitionApp: Training completed")
 
-            print(model)
-
             data = {"encodings": face_encodings, "names": names}
             model = pickle.dumps(data)
+
+            print(model)
 
             self.qSocket.put(model)
             print(datetime.datetime.now().strftime("%H:%M:%S"),
