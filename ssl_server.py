@@ -26,6 +26,9 @@ class FaceRecognitionApp(threading.Thread):
         model = 10
         self.q.put(model)
         print(datetime.datetime.now().strftime("%H:%M:%S"),
+              "Thread-FaceRecognitionApp: Put model to queue")
+        self.q.put(model)
+        print(datetime.datetime.now().strftime("%H:%M:%S"),
               "Thread-FaceRecognitionApp: Put model to queue, sleeping for 10s")
         time.sleep(10)
 
