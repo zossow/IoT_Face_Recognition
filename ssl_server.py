@@ -30,8 +30,8 @@ class FirebaseObserverApp(threading.Thread):
                 self.qFirebase.put(1)
 
             print(datetime.datetime.now().strftime("%H:%M:%S"),
-                  "Thread-FirebaseObserverApp: Temporary sleeping for 20s")
-            time.sleep(20)
+                  "Thread-FirebaseObserverApp: Temporary sleeping for 200s")
+            time.sleep(200)
 
 
 
