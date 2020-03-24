@@ -18,39 +18,22 @@ class FaceRecognitionCameraApp(threading.Thread):
         self.face_encodings_filepath = args.face_encodings
 
     def run(self):
-        # Load the known faces and embeddings along with OpenCV's Haar
-        # cascade classifier for face detection
         with open(self.face_encodings_filepath, "rb") as file:
             face_data = pickle.loads(file.read(), encoding='latin1')
-        #with open(self.haar_cascade_path, "rb") as file:
-        #    haar_data = file.read()
 
         stream = imutils.video.VideoStream(src=0, usePiCamera=False).start()
-        # Load image from image file
-        #    image = cv2.imread(image_file_path)
         cascadeClassifier = cv2.CascadeClassifier(self.haar_cascade_path)
         while True:
             image = stream.read()
-            # Convert the input image from BGR to grayscale (for face detection - Haar cascade classifier)
-            # and from BGR to RGB (for face recognition - face_recognition package)
             image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            #image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            # Detect faces in the grayscale image using Haar cascade classifier
-            # cascadeClassifier = cv2.CascadeClassifier(self.haar_cascade_path)
             #print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: face_locations start")
             # face_locations = cascadeClassifier.detectMultiScale(image_gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
             face_locations = cascadeClassifier.detectMultiScale(image_gray, scaleFactor=1.25, minNeighbors=5,
                                                                 minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
             #print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: face_locations end")
 
-            # Translate OpenCV coordinates from (x, y, w, h) to (top, right, bottom, left)
-            # Translation formula: (top, right, bottom, left) = (y, x + w, y + h, x)
             face_locations = [(y, x + w, y + h, x) for x, y, w, h in face_locations]
 
-            # Compute the facial embeddings for each face using translated coordinates and
-            # RGB image. Be aware that face_recognition.face_encodings() function returns
-            # returns a list!
-            # names = face_data["names"]
             embeddings = face_data["encodings"]
 
             preds = []
@@ -69,15 +52,7 @@ class FaceRecognitionCameraApp(threading.Thread):
                 preds.append(name)
                 print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: See:", name)
 
-            #   Find the indexes of all matched faces then count how many times each person was matched
-            #   to detected face - assign their name to the face. If nothing was matched, assign "unknown"
-            #   to the face.
-
-            # Loop over the recognized faces
-            # boxes are locations of faces detected by Haar classifier and translated
-            # to different format and names are the corresponding names assigned in the
-            # previous step
-
+            # Uncomment below to have live view from camera
             '''for ((top, right, bottom, left), pred) in zip(face_locations, preds):
                 #   Draw rectangles around the detected faces and display a person's name
                 image = cv2.rectangle(image, (left, top), (right, bottom), (0, 255, 0), 2)
@@ -92,8 +67,6 @@ class FaceRecognitionCameraApp(threading.Thread):
                 continue
 
         cv2.destroyAllWindows()'''
-
-        # Display the image to the screen
 
 
 class ClientSocketApp(threading.Thread):
@@ -110,7 +83,7 @@ class ClientSocketApp(threading.Thread):
                 while True:
                     model = ssock.recv()
                     print(datetime.datetime.now().strftime("%H:%M:%S"),
-                          "Thread-ClientSocketApp: Received model from server:", int.from_bytes(model, byteorder='little'))
+                          "Thread-ClientSocketApp: Received model from server")
                     #time.sleep(10)
                     # TODO tutaj bedzie odbieranie nowego modelu od serwera
                     # TODO i aktualizowanie modelu do nowego watku
