@@ -10,21 +10,34 @@ import cv2
 import time
 import datetime
 import hashlib
+import queue
 
 
 class FaceRecognitionCameraApp(threading.Thread):
-    def __init__(self, args):
+    def __init__(self, args, _q):
         threading.Thread.__init__(self)
         self.haar_cascade_path = args.haar_cascade
         self.face_encodings_filepath = args.face_encodings
+        self.q = _q
 
     def run(self):
-        with open(self.face_encodings_filepath, "rb") as file:
-            face_data = pickle.loads(file.read(), encoding='latin1')
+        # with open(self.face_encodings_filepath, "rb") as file:
+        #    face_data = pickle.loads(file.read(), encoding='latin1')
 
         stream = imutils.video.VideoStream(src=0, usePiCamera=False).start()
         cascadeClassifier = cv2.CascadeClassifier(self.haar_cascade_path)
+
+        while self.q.empty():
+            pass
+
         while True:
+            if not self.q.empty():
+                while not self.q.empty():
+                    dumped_model = q.get()
+                face_data = pickle.loads(dumped_model)
+                print(datetime.datetime.now().strftime("%H:%M:%S"),
+                      "Thread-FaceRecognitionCameraApp: Received new model from the queue")
+
             image = stream.read()
             image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             #print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: face_locations start")
@@ -71,26 +84,26 @@ class FaceRecognitionCameraApp(threading.Thread):
 
 
 class ClientSocketApp(threading.Thread):
-    def __init__(self, _context, _host, _port):
+    def __init__(self, _context, _host, _port, _q):
         threading.Thread.__init__(self)
         self.context = _context
         self.host = _host
-        self.port = _port
+        self.q = _q
 
     def run(self):
         with socket.create_connection((self.host, self.port)) as sock:
             with self.context.wrap_socket(sock, server_hostname=self.host) as ssock:
                 print(ssock.version())
                 while True:
-                    #model = ssock.recv()
                     model = recvall(ssock)
-                    print(hashlib.sha224(model).hexdigest())
-
                     print(datetime.datetime.now().strftime("%H:%M:%S"),
-                          "Thread-ClientSocketApp: Received model from server, sleeping for 10s")
-                    time.sleep(10)
-                    # TODO tutaj bedzie odbieranie nowego modelu od serwera
-                    # TODO i aktualizowanie modelu do nowego watku
+                          "Thread-ClientSocketApp: Received model from server:", hashlib.sha224(model).hexdigest())
+                    time.sleep(1)
+
+                    q.put(model)
+                    print(datetime.datetime.now().strftime("%H:%M:%S"),
+                          "Thread-ClientSocketApp: Put model to the queue")
+
 
 def recvall(sock):
     data = b''
@@ -120,9 +133,11 @@ def main():
     host = 'localhost'
     port = 51000
 
-    clientApp = ClientSocketApp(context, host, port)
+    q = queue.Queue()
+
+    clientApp = ClientSocketApp(context, host, port, q)
     clientApp.start()
-    cameraApp = FaceRecognitionCameraApp(cameraArgs)
+    cameraApp = FaceRecognitionCameraApp(cameraArgs, q)
     cameraApp.start()
 
     clientApp.join()

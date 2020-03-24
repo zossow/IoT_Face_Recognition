@@ -61,12 +61,9 @@ class FaceRecognitionApp(threading.Thread):
             data = {"encodings": face_encodings, "names": names}
             model = pickle.dumps(data)
 
-            print(hashlib.sha224(model).hexdigest())
-
             self.qSocket.put(model)
             print(datetime.datetime.now().strftime("%H:%M:%S"),
-                "Thread-FaceRecognitionApp: Put new model to queue, sleeping for 10s")
-            time.sleep(10)
+                "Thread-FaceRecognitionApp: Put new model to queue:", print(hashlib.sha224(model).hexdigest()))
 
 
     def get_face_encodings(self, path_to_images):
