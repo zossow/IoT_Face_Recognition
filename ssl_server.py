@@ -11,6 +11,8 @@ import argparse
 import pickle
 import cv2
 import os
+import hashlib
+
 
 class FirebaseObserverApp(threading.Thread):
     def __init__(self, _qFirebase):
@@ -59,7 +61,7 @@ class FaceRecognitionApp(threading.Thread):
             data = {"encodings": face_encodings, "names": names}
             model = pickle.dumps(data)
 
-            print(model)
+            print(hashlib.sha224(model).hexdigest())
 
             self.qSocket.put(model)
             print(datetime.datetime.now().strftime("%H:%M:%S"),
