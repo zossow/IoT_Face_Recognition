@@ -53,6 +53,8 @@ class FaceRecognitionApp(threading.Thread):
             print(datetime.datetime.now().strftime("%H:%M:%S"),
                   "Thread-FaceRecognitionApp: Got signal from FirebaseObserverApp to train new model")
             names, face_encodings = self.get_face_encodings(self.path_to_images)
+            print(datetime.datetime.now().strftime("%H:%M:%S"),
+                  "Thread-FaceRecognitionApp: Training completed")
 
             data = {"encodings": face_encodings, "names": names}
             model = pickle.dumps(data)
