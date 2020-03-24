@@ -61,9 +61,9 @@ class FaceRecognitionApp(threading.Thread):
             data = {"encodings": face_encodings, "names": names}
             model = pickle.dumps(data)
 
-            self.qSocket.put(model)
             print(datetime.datetime.now().strftime("%H:%M:%S"),
-                "Thread-FaceRecognitionApp: Put new model to queue:", hashlib.sha224(model).hexdigest())
+                  "Thread-FaceRecognitionApp: Put new model to queue:", hashlib.sha224(model).hexdigest())
+            self.qSocket.put(model)
 
 
     def get_face_encodings(self, path_to_images):
@@ -112,6 +112,7 @@ class ServerSocketApp(threading.Thread):
                         model = self.qSocket.get()
                     print(datetime.datetime.now().strftime("%H:%M:%S"),
                           "Thread-ServerSocketApp: Received model from queue")
+
                     connection.sendall(model)
                     print(datetime.datetime.now().strftime("%H:%M:%S"),
                           "Thread-ServerSocketApp: Send model to RPi")
