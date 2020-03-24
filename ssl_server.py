@@ -50,7 +50,7 @@ class ServerSocketApp(threading.Thread):
                     model = self.q.get()
                     print(datetime.datetime.now().strftime("%H:%M:%S"),
                           "Thread-ServerSocketApp: Received model from queue")
-                    connection.send(model)
+                    connection.send(int_to_bytes(model))
                     print(datetime.datetime.now().strftime("%H:%M:%S"),
                           "Thread-ServerSocketApp: Send file to RPi, sleeping for 10s")
                     time.sleep(10)
