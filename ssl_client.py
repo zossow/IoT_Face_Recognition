@@ -37,11 +37,11 @@ class FaceRecognitionCameraApp(threading.Thread):
             #image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             # Detect faces in the grayscale image using Haar cascade classifier
             # cascadeClassifier = cv2.CascadeClassifier(self.haar_cascade_path)
-            print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: face_locations start")
+            #print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: face_locations start")
             # face_locations = cascadeClassifier.detectMultiScale(image_gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
             face_locations = cascadeClassifier.detectMultiScale(image_gray, scaleFactor=1.25, minNeighbors=5,
                                                                 minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
-            print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: face_locations end")
+            #print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: face_locations end")
 
             # Translate OpenCV coordinates from (x, y, w, h) to (top, right, bottom, left)
             # Translation formula: (top, right, bottom, left) = (y, x + w, y + h, x)
@@ -67,7 +67,7 @@ class FaceRecognitionCameraApp(threading.Thread):
                         counts[name] = counts.get(name, 0) + 1
                     name = max(counts, key=counts.get)
                 preds.append(name)
-                print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp:!See:", name)
+                print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: See:", name)
 
             #   Find the indexes of all matched faces then count how many times each person was matched
             #   to detected face - assign their name to the face. If nothing was matched, assign "unknown"
@@ -78,7 +78,7 @@ class FaceRecognitionCameraApp(threading.Thread):
             # to different format and names are the corresponding names assigned in the
             # previous step
 
-            for ((top, right, bottom, left), pred) in zip(face_locations, preds):
+            '''for ((top, right, bottom, left), pred) in zip(face_locations, preds):
                 #   Draw rectangles around the detected faces and display a person's name
                 image = cv2.rectangle(image, (left, top), (right, bottom), (0, 255, 0), 2)
                 image = cv2.putText(image, pred, (left, top), cv2.FONT_HERSHEY_SIMPLEX, 5, (255, 0, 0), 7)
@@ -91,7 +91,7 @@ class FaceRecognitionCameraApp(threading.Thread):
             elif f == -1:
                 continue
 
-        cv2.destroyAllWindows()
+        cv2.destroyAllWindows()'''
 
         # Display the image to the screen
 
@@ -108,7 +108,9 @@ class ClientSocketApp(threading.Thread):
             with self.context.wrap_socket(sock, server_hostname=self.host) as ssock:
                 print(ssock.version())
                 while True:
-                    time.sleep(10)
+                    model = ssock.recv()
+                    print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-ClientSocketApp: Received model from server:", model)
+                    #time.sleep(10)
                     # TODO tutaj bedzie odbieranie nowego modelu od serwera
                     # TODO i aktualizowanie modelu do nowego watku
 
