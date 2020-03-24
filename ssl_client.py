@@ -88,6 +88,7 @@ class ClientSocketApp(threading.Thread):
         threading.Thread.__init__(self)
         self.context = _context
         self.host = _host
+        self.port = _port
         self.q = _q
 
     def run(self):
