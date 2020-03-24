@@ -49,9 +49,9 @@ class ServerSocketApp(threading.Thread):
                 ssock.setblocking(0)
                 print("RPi connection from:", connection.getpeername()[0])
                 while True:
-                    if q.empty():
+                    if self.q.empty():
                         continue
-                    while not q.empty():
+                    while not self.q.empty():
                         model = self.q.get()
                     print(datetime.datetime.now().strftime("%H:%M:%S"),
                           "Thread-ServerSocketApp: Received", model, " from queue")
