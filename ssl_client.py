@@ -92,7 +92,7 @@ class ClientSocketApp(threading.Thread):
                     # TODO tutaj bedzie odbieranie nowego modelu od serwera
                     # TODO i aktualizowanie modelu do nowego watku
 
-def recvall(self, sock):
+def recvall(sock):
     data = b''
     bufsize = 4096
     while True:
