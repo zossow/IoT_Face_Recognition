@@ -4,6 +4,7 @@ import ssl
 import queue
 import time
 import datetime
+import random
 
 
 class FirebaseObserverApp(threading.Thread):
@@ -20,17 +21,15 @@ class FaceRecognitionApp(threading.Thread):
     def __init__(self, _q):
         threading.Thread.__init__(self)
         self.q = _q
-        # TODO kod Bambo i Zoski
 
     def run(self):
-        model = 10
-        self.q.put(model)
-        print(datetime.datetime.now().strftime("%H:%M:%S"),
-              "Thread-FaceRecognitionApp: Put model to queue")
-        self.q.put(model)
-        print(datetime.datetime.now().strftime("%H:%M:%S"),
-              "Thread-FaceRecognitionApp: Put model to queue, sleeping for 10s")
-        time.sleep(10)
+        while True:
+            # TODO kod Bambo i Zoski
+            model = random.random()
+            self.q.put(model)
+            print(datetime.datetime.now().strftime("%H:%M:%S"),
+                "Thread-FaceRecognitionApp: Put ", model,  " to queue, sleeping for 10s")
+            time.sleep(10)
 
 
 class ServerSocketApp(threading.Thread):
@@ -50,15 +49,16 @@ class ServerSocketApp(threading.Thread):
                 ssock.setblocking(0)
                 print("RPi connection from:", connection.getpeername()[0])
                 while True:
-                    model = self.q.get()
+                    if q.empty():
+                        continue
+                    while not q.empty():
+                        model = self.q.get()
                     print(datetime.datetime.now().strftime("%H:%M:%S"),
-                          "Thread-ServerSocketApp: Received model from queue")
+                          "Thread-ServerSocketApp: Received", model, " from queue")
                     connection.send(bytes([model]))
                     print(datetime.datetime.now().strftime("%H:%M:%S"),
-                          "Thread-ServerSocketApp: Send file to RPi, sleeping for 10s")
-                    time.sleep(10)
-                    # TODO tutaj jak bedzie nowy model
-                    # TODO to wysle sie go do RPi za pomoca connection.sendfile()
+                          "Thread-ServerSocketApp: Send file to RPi, sleeping for 30s")
+                    time.sleep(30)
 
 
 def main():
