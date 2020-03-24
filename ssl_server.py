@@ -63,7 +63,7 @@ class FaceRecognitionApp(threading.Thread):
 
             self.qSocket.put(model)
             print(datetime.datetime.now().strftime("%H:%M:%S"),
-                "Thread-FaceRecognitionApp: Put new model to queue:", print(hashlib.sha224(model).hexdigest()))
+                "Thread-FaceRecognitionApp: Put new model to queue:", hashlib.sha224(model).hexdigest())
 
 
     def get_face_encodings(self, path_to_images):

@@ -33,7 +33,7 @@ class FaceRecognitionCameraApp(threading.Thread):
         while True:
             if not self.q.empty():
                 while not self.q.empty():
-                    dumped_model = q.get()
+                    dumped_model = self.q.get()
                 face_data = pickle.loads(dumped_model)
                 print(datetime.datetime.now().strftime("%H:%M:%S"),
                       "Thread-FaceRecognitionCameraApp: Received new model from the queue")
@@ -101,7 +101,7 @@ class ClientSocketApp(threading.Thread):
                           "Thread-ClientSocketApp: Received model from server:", hashlib.sha224(model).hexdigest())
                     time.sleep(1)
 
-                    q.put(model)
+                    self.q.put(model)
                     print(datetime.datetime.now().strftime("%H:%M:%S"),
                           "Thread-ClientSocketApp: Put model to the queue")
 
