@@ -111,7 +111,7 @@ class ServerSocketApp(threading.Thread):
                         model = self.qSocket.get()
                     print(datetime.datetime.now().strftime("%H:%M:%S"),
                           "Thread-ServerSocketApp: Received model from queue")
-                    connection.send(model)
+                    connection.sendall(model)
                     print(datetime.datetime.now().strftime("%H:%M:%S"),
                           "Thread-ServerSocketApp: Send model to RPi")
 
