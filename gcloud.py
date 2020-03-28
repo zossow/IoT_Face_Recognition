@@ -4,7 +4,7 @@ from config import config
 import logging
 
 
-class Storage():
+class Storage:
     def __init__(self):
         self.client = storage.Client()
         self.config = config
