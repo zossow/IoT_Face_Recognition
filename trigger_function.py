@@ -34,8 +34,8 @@ def find_all_adding_img():
 
 def set_env():
     if os.getenv("GOOGLE_APPLICATION_CREDENTIALS") is None:
-        path_credential = "/home/wiola/Pobrane/iot-face-recognition-f4f53-firebase-adminsdk-e8ek4-dfb5eb4477.json"
-        # path_credential = "/root/IoT_Face_Recognition"
+        #path_credential = "/home/wiola/Pobrane/iot-face-recognition-f4f53-firebase-adminsdk-e8ek4-dfb5eb4477.json"
+        path_credential = "/root/iot-face-recognition-f4f53-firebase-adminsdk-e8ek4-dfb5eb4477.json"
         logging.info("Set Environment Variable: GOOGLE_APPLICATION_CREDENTIALS")
         os.environ[
             "GOOGLE_APPLICATION_CREDENTIALS"] = path_credential
