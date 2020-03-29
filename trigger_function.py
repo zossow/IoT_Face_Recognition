@@ -7,7 +7,7 @@ from os import listdir
 from config import config
 from gcloud import Storage
 
-from firebase import firebase
+
 
 
 def parser_logs(output):
@@ -48,25 +48,25 @@ class TriggerFunction:
 
     def local_list_of_img(self):
         list_local_img = [img for img in listdir(self.config.picture_folder)]
-        logging.info(f"Local images: \n {list_local_img} \n")
+
         return list_local_img
 
-    def images_to_download(self):
+    def check_if_new_file(self):
         check_directory_exist(self.config.picture_folder)
         list_storage_img = find_all_adding_img()
-        for _ in list_storage_img:
-            if _ in self.local_list_of_img():
-                logging.info(f"{_} exist in local base")
-            else:
-                logging.info(f"{_} no exist. Start downloading img ...")
-                self.storage.download_single_img(_)
+        compare = [serv_files for serv_files in list_storage_img if serv_files not in self.local_list_of_img()]
+        if not compare:
+            logging.info("Not new files to download")
+            return False, None
+        else:
+            logging.info(f"New files to download: {compare}")
+            return True, compare
+
+    def images_to_download(self, new_files):
+        for _ in new_files:
+            logging.info(f"Start downloading img {_} ...")
+            self.storage.download_single_img(_)
         logging.info("All adding images were downloaded")
 
 
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    set_env()
-    # trigger.find_all_adding_img()
-    trigger = TriggerFunction()
 
-    trigger.images_to_download()

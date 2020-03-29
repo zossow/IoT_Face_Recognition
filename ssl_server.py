@@ -1,3 +1,4 @@
+import logging
 import socket
 import threading
 import ssl
@@ -13,28 +14,36 @@ import cv2
 import os
 import hashlib
 
+from trigger_function import TriggerFunction, set_env
+
 
 class FirebaseObserverApp(threading.Thread):
     def __init__(self, _qFirebase):
         threading.Thread.__init__(self)
         self.qFirebase = _qFirebase
+
         # TODO kod Wiolci
 
     def run(self):
         while True:
-            # TODO observer - jak beda nowe pliki to odpali ponizszy kod
-            print(datetime.datetime.now().strftime("%H:%M:%S"),
-                  "Thread-FirebaseObserverApp: New pictures, letting now FaceRecognitionApp to create new model")
+            set_env()
+            trigger = TriggerFunction()
+            bool_value, files_name = trigger.check_if_new_file()
+            if bool_value:
+                set_env()
+                trigger.images_to_download(files_name)
+                # TODO observer - jak beda nowe pliki to odpali ponizszy kod
+                print(datetime.datetime.now().strftime("%H:%M:%S"),
+                      "Thread-FirebaseObserverApp: New pictures, letting now FaceRecognitionApp to create new model")
 
-            '''If this queue is not empty, it means that FaceRecognitionApp should,
-             but didn't started creating model yet. Don't have to said it again :)'''
-            if self.qFirebase.empty():
-                self.qFirebase.put(1)
+                '''If this queue is not empty, it means that FaceRecognitionApp should,
+                 but didn't started creating model yet. Don't have to said it again :)'''
+                if self.qFirebase.empty():
+                    self.qFirebase.put(1)
 
-            print(datetime.datetime.now().strftime("%H:%M:%S"),
-                  "Thread-FirebaseObserverApp: Temporary sleeping for 200s")
-            time.sleep(200)
-
+                print(datetime.datetime.now().strftime("%H:%M:%S"),
+                      "Thread-FirebaseObserverApp: Temporary sleeping for 200s")
+                time.sleep(200)
 
 
 class FaceRecognitionApp(threading.Thread):
@@ -42,7 +51,7 @@ class FaceRecognitionApp(threading.Thread):
         threading.Thread.__init__(self)
         self.qSocket = _qSocket
         self.qFirebase = _qFirebase
-        self.path_to_images = "Pictures/"
+        self.path_to_images = "tmp/Pictures"
 
 
     def run(self):
@@ -119,6 +128,8 @@ class ServerSocketApp(threading.Thread):
 
 
 def main():
+    logging.basicConfig(level=logging.INFO)
+
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
     context.load_cert_chain('ca.pem', 'ca.key')
 
@@ -131,8 +142,10 @@ def main():
     serverApp = ServerSocketApp(context, host, port, qSocket)
     serverApp.start()
 
+
     faceRecognitionModel = FaceRecognitionApp(qSocket, qFirebase)
     faceRecognitionModel.start()
+
 
     firebaseApp = FirebaseObserverApp(qFirebase)
     firebaseApp.start()
@@ -143,4 +156,6 @@ def main():
 
 
 main()
+
+
 
