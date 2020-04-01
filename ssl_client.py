@@ -11,7 +11,7 @@ import time
 import datetime
 import hashlib
 import queue
-
+from leds_interface import LED, GREEN_LED, RED_LED
 
 class FaceRecognitionCameraApp(threading.Thread):
     def __init__(self, args, _q):
@@ -62,10 +62,13 @@ class FaceRecognitionCameraApp(threading.Thread):
                     for i in matchedIdxs:
                         name = face_data["names"][i]
                         counts[name] = counts.get(name, 0) + 1
+                        t1 = LED(GREEN_LED, 3)
+                        t1.start()
                     name = max(counts, key=counts.get)
                 preds.append(name)
                 print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: See:", name)
-
+                t2 = LED(RED_LED, 2)
+                t2.start()
             # Uncomment below to have live view from camera
             '''for ((top, right, bottom, left), pred) in zip(face_locations, preds):
                 #   Draw rectangles around the detected faces and display a person's name
