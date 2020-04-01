@@ -62,7 +62,7 @@ class FaceRecognitionCameraApp(threading.Thread):
                     for i in matchedIdxs:
                         name = face_data["names"][i]
                         counts[name] = counts.get(name, 0) + 1
-                        t1 = LED(GREEN_LED, 2)
+                        t1 = LED(GREEN_LED, 1)
                         t1.start()
                     name = max(counts, key=counts.get)
                 preds.append(name)
