@@ -11,7 +11,7 @@ import time
 import datetime
 import hashlib
 import queue
-from leds_interface import LED, GREEN_LED, RED_LED
+from leds_interface import LED, GREEN_LED, RED_LED, YELLOW_LED
 
 class FaceRecognitionCameraApp(threading.Thread):
     def __init__(self, args, _q):
@@ -55,22 +55,27 @@ class FaceRecognitionCameraApp(threading.Thread):
             for recogn_embedding in recogn_embeddings:
                 face_matrix = face_recognition.compare_faces(embeddings, recogn_embedding)
                 name = "Unknown"
-
+                count = 0
                 if True in face_matrix:
                     matchedIdxs = [i for (i, b) in enumerate(face_matrix) if b]
                     counts = {}
                     for i in matchedIdxs:
                         name = face_data["names"][i]
                         counts[name] = counts.get(name, 0) + 1
+                        count += 1
                     name = max(counts, key=counts.get)
                 preds.append(name)
-                if name == "Unknown":
-                    t2 = LED(RED_LED, 1)
-                    t2.start()
-                else:
-                    t1 = LED(GREEN_LED, 1)
-                    t1.start()
+
                 print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: See:", name)
+            if count == 1 and name == "Unknown":
+                t1 = LED(RED_LED, 1)
+                t1.start()
+            elif count == 1 and name != "Unknown":
+                t3 = LED(GREEN_LED, 1)
+                t3.start()
+            elif count > 1:
+                t2 = LED(YELLOW_LED, 1)
+                t2.start()
 
             # Uncomment below to have live view from camera
             '''for ((top, right, bottom, left), pred) in zip(face_locations, preds):
