@@ -65,17 +65,18 @@ class FaceRecognitionCameraApp(threading.Thread):
                         count += 1
                     name = max(counts, key=counts.get)
                 preds.append(name)
-
                 print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: See:", name)
-            if count == 1 and name == "Unknown":
-                t1 = LED(RED_LED, 1)
-                t1.start()
-            elif count == 1 and name != "Unknown":
-                t3 = LED(GREEN_LED, 1)
-                t3.start()
-            elif count > 1:
-                t2 = LED(YELLOW_LED, 1)
-                t2.start()
+            print(preds)
+
+            # if count == 1 and name == "Unknown":
+            #     t1 = LED(RED_LED, 1)
+            #     t1.start()
+            # elif count == 1 and name != "Unknown":
+            #     t3 = LED(GREEN_LED, 1)
+            #     t3.start()
+            # elif count > 1:
+            #     t2 = LED(YELLOW_LED, 1)
+            #     t2.start()
 
             # Uncomment below to have live view from camera
             '''for ((top, right, bottom, left), pred) in zip(face_locations, preds):
