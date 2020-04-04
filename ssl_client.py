@@ -111,7 +111,8 @@ class ClientSocketApp(threading.Thread):
     def run(self):
         with socket.create_connection((self.host, self.port)) as sock:
             with self.context.wrap_socket(sock, server_hostname=self.host) as ssock:
-                print(ssock.version())
+                print(datetime.datetime.now().strftime("%H:%M:%S"),
+                      "Thread-ClientSocketApp: Connected to server using:", ssock.version())
                 while True:
                     model = recvall(ssock)
                     print(datetime.datetime.now().strftime("%H:%M:%S"),

@@ -65,7 +65,8 @@ class FaceRecognitionApp(threading.Thread):
             self.qSocket.put(model)
 
     @classmethod
-    def keyboardInterruptHandler(signal, frame):
+    def keyboardInterruptHandler(signal, frame, arg):
+        print(signal, frame, arg)
         print("KeyboardInterrupt (ID: {}) has been caught. Cleaning up...".format(signal))
         exit(0)
 
