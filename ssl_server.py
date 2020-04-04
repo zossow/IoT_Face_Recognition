@@ -45,8 +45,9 @@ class FaceRecognitionApp(threading.Thread):
 
     def run(self):
         if os.path.exists('dumped_model.bin'):
-            with open('dumped_model.bin', 'rb') as model:
-                # model = pickle.load(fid)
+            with open('dumped_model.bin', 'rb') as fid:
+                data = pickle.load(fid)
+                model = pickle.dumps(data)
                 print(datetime.datetime.now().strftime("%H:%M:%S"),
                       "Thread-FaceRecognitionApp: Put saved model to queue:", hashlib.sha224(model).hexdigest())
                 self.qSocket.put(model)
