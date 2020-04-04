@@ -12,6 +12,7 @@ import pickle
 import cv2
 import os
 import hashlib
+import signal
 
 
 class FirebaseObserverApp(threading.Thread):
@@ -36,14 +37,12 @@ class FirebaseObserverApp(threading.Thread):
             time.sleep(200)
 
 
-
 class FaceRecognitionApp(threading.Thread):
     def __init__(self, _qSocket, _qFirebase):
         threading.Thread.__init__(self)
         self.qSocket = _qSocket
         self.qFirebase = _qFirebase
         self.path_to_images = "Pictures/"
-
 
     def run(self):
         while True:
@@ -65,6 +64,10 @@ class FaceRecognitionApp(threading.Thread):
                   "Thread-FaceRecognitionApp: Put new model to queue:", hashlib.sha224(model).hexdigest())
             self.qSocket.put(model)
 
+    @classmethod
+    def keyboardInterruptHandler(signal, frame):
+        print("KeyboardInterrupt (ID: {}) has been caught. Cleaning up...".format(signal))
+        exit(0)
 
     def get_face_encodings(self, path_to_images):
         names = []
@@ -73,12 +76,10 @@ class FaceRecognitionApp(threading.Thread):
         for image_path in paths.list_images(path_to_images):
             name = image_path.replace("_", os.path.sep).split(os.path.sep)[-2]
 
-            #print("processing image {image} for person: {person}".format(image=image_path, person=name))
             image = cv2.imread(image_path)
             rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
             face_locations = face_recognition.face_locations(rgb_image, model="hog")
-            #print("found {number} faces in the image, should be 1!".format(number=len(face_locations)))
 
             encodings = face_recognition.face_encodings(rgb_image, face_locations)
 
@@ -87,6 +88,7 @@ class FaceRecognitionApp(threading.Thread):
                 face_encodings.append(encoding)
 
         return names, face_encodings
+
 
 class ServerSocketApp(threading.Thread):
     def __init__(self, _context, _host, _port, _qSocket):
@@ -133,6 +135,7 @@ def main():
 
     faceRecognitionModel = FaceRecognitionApp(qSocket, qFirebase)
     faceRecognitionModel.start()
+    signal.signal(signal.SIGINT, FaceRecognitionApp.keyboardInterruptHandler)
 
     firebaseApp = FirebaseObserverApp(qFirebase)
     firebaseApp.start()

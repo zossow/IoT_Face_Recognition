@@ -12,20 +12,26 @@ import datetime
 import hashlib
 import queue
 from leds_interface import LED, GREEN_LED, RED_LED, YELLOW_LED
+import signal
+
+
+def keyboardInterruptHandler(signal, frame):
+    print("KeyboardInterrupt (ID: {}) has been caught. Cleaning up...".format(signal))
+    LED.cleanup()
+    exit(0)
+
 
 class FaceRecognitionCameraApp(threading.Thread):
-    def __init__(self, args, _q):
+    def __init__(self, _q):
         threading.Thread.__init__(self)
-        self.haar_cascade_path = args.haar_cascade
-        self.face_encodings_filepath = args.face_encodings
+        self.haar_cascade_path = "haar_cascades/haarcascade_frontalface_default.xml"
         self.q = _q
 
     def run(self):
-        # with open(self.face_encodings_filepath, "rb") as file:
-        #    face_data = pickle.loads(file.read(), encoding='latin1')
-
         stream = imutils.video.VideoStream(src=0, usePiCamera=False).start()
         cascadeClassifier = cv2.CascadeClassifier(self.haar_cascade_path)
+        dumped_model = None
+        face_data = None
 
         while self.q.empty():
             pass
@@ -40,11 +46,8 @@ class FaceRecognitionCameraApp(threading.Thread):
 
             image = stream.read()
             image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            #print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: face_locations start")
-            # face_locations = cascadeClassifier.detectMultiScale(image_gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
-            face_locations = cascadeClassifier.detectMultiScale(image_gray, scaleFactor=1.25, minNeighbors=5,
+            face_locations = cascadeClassifier.detectMultiScale(image_gray, scaleFactor=1.2, minNeighbors=6,
                                                                 minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
-            #print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: face_locations end")
 
             face_locations = [(y, x + w, y + h, x) for x, y, w, h in face_locations]
 
@@ -67,17 +70,17 @@ class FaceRecognitionCameraApp(threading.Thread):
                 preds.append(name)
                 print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FaceRecognitionCameraApp: See:", name)
 
-            if preds == []:
+            if not preds:
                 pass
             elif "Unknown" not in preds:
-                t3 = LED(GREEN_LED, 1)
+                t3 = LED(GREEN_LED, 0.7)
                 t3.start()
             else:
                 if len(set(preds)) == 1:
-                    t1 = LED(RED_LED, 1)
+                    t1 = LED(RED_LED, 0.7)
                     t1.start()
                 else:
-                    t2 = LED(YELLOW_LED, 1)
+                    t2 = LED(YELLOW_LED, 0.7)
                     t2.start()
 
             # Uncomment below to have live view from camera
@@ -130,15 +133,9 @@ def recvall(sock):
             break
     return data
 
-def parse_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-c", "--haar-cascade", required=True, help="path to where the face cascade resides")
-    parser.add_argument("-f", "--face-encodings", required=True, help="path to serialized db of facial encodings")
-    return parser.parse_args()
-
 
 def main():
-    cameraArgs = parse_args()
+    signal.signal(signal.SIGINT, keyboardInterruptHandler)
 
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
     context.load_verify_locations('client.cer')
@@ -152,7 +149,7 @@ def main():
 
     clientApp = ClientSocketApp(context, host, port, q)
     clientApp.start()
-    cameraApp = FaceRecognitionCameraApp(cameraArgs, q)
+    cameraApp = FaceRecognitionCameraApp(q)
     cameraApp.start()
 
     clientApp.join()

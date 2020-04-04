@@ -22,6 +22,10 @@ class LED(threading.Thread):
         time.sleep(self.time)
         GPIO.output(self.gpiopin, GPIO.LOW)
 
+    @classmethod
+    def cleanup(cls):
+        GPIO.cleanup()
+
 
 def main():
     t1 = LED(RED_LED, 1)
