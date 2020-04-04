@@ -22,8 +22,6 @@ class FirebaseObserverApp(threading.Thread):
         threading.Thread.__init__(self)
         self.qFirebase = _qFirebase
 
-        # TODO kod Wiolci
-
     def run(self):
         while True:
             set_env()
@@ -32,7 +30,6 @@ class FirebaseObserverApp(threading.Thread):
             if bool_value:
                 set_env()
                 trigger.images_to_download(files_name)
-                # TODO observer - jak beda nowe pliki to odpali ponizszy kod
                 print(datetime.datetime.now().strftime("%H:%M:%S"),
                       "Thread-FirebaseObserverApp: New pictures, letting now FaceRecognitionApp to create new model")
 
@@ -41,9 +38,6 @@ class FirebaseObserverApp(threading.Thread):
                 if self.qFirebase.empty():
                     self.qFirebase.put(1)
 
-                print(datetime.datetime.now().strftime("%H:%M:%S"),
-                      "Thread-FirebaseObserverApp: Temporary sleeping for 200s")
-                time.sleep(200)
 
 class FaceRecognitionApp(threading.Thread):
     def __init__(self, _qSocket, _qFirebase):
