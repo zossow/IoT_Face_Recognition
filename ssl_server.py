@@ -12,7 +12,6 @@ import pickle
 import cv2
 import os
 import hashlib
-import signal
 
 
 class FirebaseObserverApp(threading.Thread):
@@ -45,6 +44,16 @@ class FaceRecognitionApp(threading.Thread):
         self.path_to_images = "Pictures/"
 
     def run(self):
+        if os.path.exists('dumped_model.bin'):
+            with open('dumped_model.bin', 'rb') as fid:
+                model = pickle.load(fid)
+                print(datetime.datetime.now().strftime("%H:%M:%S"),
+                      "Thread-FaceRecognitionApp: Put saved model to queue:", hashlib.sha224(model).hexdigest())
+                self.qSocket.put(model)
+        else:
+            print(datetime.datetime.now().strftime("%H:%M:%S"),
+                  "Thread-FaceRecognitionApp: No saved model on a server, waiting for pictures from DB")
+
         while True:
             if self.qFirebase.empty():
                 continue
@@ -61,14 +70,13 @@ class FaceRecognitionApp(threading.Thread):
             model = pickle.dumps(data)
 
             print(datetime.datetime.now().strftime("%H:%M:%S"),
+                  "Thread-FaceRecognitionApp: Saving model to: dumped_model.bin")
+            with open('dumped_model.bin', 'wb') as fid:
+                pickle.dump(data, fid)
+
+            print(datetime.datetime.now().strftime("%H:%M:%S"),
                   "Thread-FaceRecognitionApp: Put new model to queue:", hashlib.sha224(model).hexdigest())
             self.qSocket.put(model)
-
-    @classmethod
-    def keyboardInterruptHandler(signal, frame, arg):
-        print(signal, frame, arg)
-        print("KeyboardInterrupt (ID: {}) has been caught. Cleaning up...".format(signal))
-        exit(0)
 
     def get_face_encodings(self, path_to_images):
         names = []
@@ -136,7 +144,6 @@ def main():
 
     faceRecognitionModel = FaceRecognitionApp(qSocket, qFirebase)
     faceRecognitionModel.start()
-    signal.signal(signal.SIGINT, FaceRecognitionApp.keyboardInterruptHandler)
 
     firebaseApp = FirebaseObserverApp(qFirebase)
     firebaseApp.start()
