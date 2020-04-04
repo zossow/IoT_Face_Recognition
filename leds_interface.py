@@ -1,43 +1,27 @@
-import RPi.GPIO as GPIO
-import time
-import threading
+import datetime
+import socket
 
-RED_LED = 36
-YELLOW_LED = 38
-GREEN_LED = 40
-
-
-class LED(threading.Thread):
-    GPIO.setmode(GPIO.BOARD)
-    GPIO.setwarnings(False)
-
-    def __init__(self, gpiopin, time):
-        threading.Thread.__init__(self)
-        self.gpiopin = gpiopin
-        self.time = time
-
-    def run(self):
-        GPIO.setup(self.gpiopin, GPIO.OUT, initial=GPIO.LOW)
-        GPIO.output(self.gpiopin, GPIO.HIGH)
-        time.sleep(self.time)
-        GPIO.output(self.gpiopin, GPIO.LOW)
-
-    @classmethod
-    def cleanup(cls):
-        GPIO.cleanup()
+RED_LED = 0
+YELLOW_LED = 1
+GREEN_LED = 2
 
 
-def main():
-    t1 = LED(RED_LED, 1)
-    t1.start()
-    t2 = LED(GREEN_LED, 3)
-    t2.start()
+class LedInterface:
+    def __init__(self):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0) as sock:
+            sock.bind(('0', 5000))
+            sock.listen(5)
+            self.connection, address = sock.accept()
+            sock.setblocking(False)
 
-    t1.join()
-    t2.join()
+    def RED(self):
+        self.connection.send(bytes([RED_LED]))
+        print(datetime.datetime.now().strftime("%H:%M:%S"), "LedInterface: Send RED to ESP")
 
-    GPIO.cleanup()
+    def YELLOW(self):
+        self.connection.send(bytes([YELLOW_LED]))
+        print(datetime.datetime.now().strftime("%H:%M:%S"), "LedInterface: Send YELLOW to ESP")
 
-
-if __name__ == "__main__":
-    main()
+    def GREEN(self):
+        self.connection.send(bytes([GREEN_LED]))
+        print(datetime.datetime.now().strftime("%H:%M:%S"), "LedInterface: Send GREEN to ESP")

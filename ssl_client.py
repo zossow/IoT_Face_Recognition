@@ -11,13 +11,12 @@ import time
 import datetime
 import hashlib
 import queue
-from leds_interface import LED, GREEN_LED, RED_LED, YELLOW_LED
+from leds_interface import LedInterface
 import signal
 
 
 def keyboardInterruptHandler(signal, frame):
     print("KeyboardInterrupt (ID: {}) has been caught. Cleaning up...".format(signal))
-    LED.cleanup()
     exit(0)
 
 
@@ -26,6 +25,7 @@ class FaceRecognitionCameraApp(threading.Thread):
         threading.Thread.__init__(self)
         self.haar_cascade_path = "haar_cascades/haarcascade_frontalface_default.xml"
         self.q = _q
+        self.led = LedInterface()
 
     def run(self):
         stream = imutils.video.VideoStream(src=0, usePiCamera=False).start()
@@ -73,15 +73,12 @@ class FaceRecognitionCameraApp(threading.Thread):
             if not preds:
                 pass
             elif "Unknown" not in preds:
-                t3 = LED(GREEN_LED, 0.7)
-                t3.start()
+                self.led.GREEN()
             else:
                 if len(set(preds)) == 1:
-                    t1 = LED(RED_LED, 0.7)
-                    t1.start()
+                    self.led.RED()
                 else:
-                    t2 = LED(YELLOW_LED, 0.7)
-                    t2.start()
+                    self.led.YELLOW()
 
             # Uncomment below to have live view from camera
             '''for ((top, right, bottom, left), pred) in zip(face_locations, preds):
