@@ -9,5 +9,7 @@ config = FirebaseConfig(
     messagingSenderId="144714475977",
     appId="1:144714475977:web:1ebef2721097f8ecd06018",
     measurementId="G-E3987SDDD4",
-    picture_folder="tmp/Pictures"
+    tmp_picture_folder="/root/IoT_Face_Recognition/tmp/Pictures",
+    # main_picture_folder="/home/wiola/PycharmProjects/iot/IoT_Face_Recognition/Pictures"
+    main_picture_folder='/root/IoT_Face_Recognition/Pictures'
 )
