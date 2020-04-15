@@ -16,6 +16,7 @@ import hashlib
 
 from transfer_files import transfer_files_to_main_directory
 from trigger_function import TriggerFunction, set_env
+from image_augmentation import image_data_augmentation, transformations
 
 
 class FirebaseObserverApp(threading.Thread):
@@ -34,7 +35,7 @@ class FirebaseObserverApp(threading.Thread):
                 set_env()
                 trigger.images_to_download(files_name)
 
-                # Bambiego Funckje
+                image_data_augmentation(folder_with_images='tmp/Pictures', transformations=transformations)
 
                 transfer_files_to_main_directory()
                 # TODO observer - jak beda nowe pliki to odpali ponizszy kod
