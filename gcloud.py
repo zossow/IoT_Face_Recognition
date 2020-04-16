@@ -29,15 +29,16 @@ class Storage:
     def download_single_img(self, name):
         bucket = self.client.bucket(self.config.storageBucket)
         blob = bucket.blob(name)
-        blob.download_to_filename(os.path.join(self.config.picture_folder, name))
-        logging.info(f"{name} was successfully downloaded.")
+        blob.download_to_filename(os.path.join(self.config.tmp_picture_folder, name))
+        print(f"{name} was successfully downloaded.")
 
 
-#if os.getenv("GOOGLE_APPLICATION_CREDENTIALS") is None:
+# if os.getenv("GOOGLE_APPLICATION_CREDENTIALS") is None:
 #    path_credential = "/home/wiola/Pobrane/iot-face-recognition-f4f53-firebase-adminsdk-e8ek4-dfb5eb4477.json"
 #    print("Set Environment Variable: GOOGLE_APPLICATION_CREDENTIALS")
 #    os.environ[
 #        "GOOGLE_APPLICATION_CREDENTIALS"] = path_credential
-#w = Storage()
-#w.download_all_img()
+# w = Storage()
+# w.download_all_img()
 # w.download_single_img('screan_1.jpg')
+

@@ -14,6 +14,7 @@ import cv2
 import os
 import hashlib
 
+from transfer_files import transfer_files_to_main_directory
 from trigger_function import TriggerFunction, set_env
 
 
@@ -30,6 +31,9 @@ class FirebaseObserverApp(threading.Thread):
             if bool_value:
                 set_env()
                 trigger.images_to_download(files_name)
+                # Bambiego Funckje
+                transfer_files_to_main_directory()
+                # TODO observer - jak beda nowe pliki to odpali ponizszy kod
                 print(datetime.datetime.now().strftime("%H:%M:%S"),
                       "Thread-FirebaseObserverApp: New pictures, letting now FaceRecognitionApp to create new model")
 
