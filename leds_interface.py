@@ -1,9 +1,9 @@
 import datetime
 import socket
 
-RED_LED = 0x00
+RED_LED = 0x02
 YELLOW_LED = 0x01
-GREEN_LED = 0x02
+GREEN_LED = 0x00
 
 
 class LedInterface:
