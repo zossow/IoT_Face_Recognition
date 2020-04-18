@@ -1,3 +1,4 @@
+import logging
 import os
 import shutil
 from os import listdir
@@ -12,9 +13,9 @@ def transfer_files_to_main_directory():
     if compare:
         for image in compare:
             shutil.copy(os.path.join(config.tmp_picture_folder, image), config.main_picture_folder)
-        print(f"Files {compare} copied to main directory.")
+        logging.warning(f"{len(compare)} files were copied to main directory.\n {compare}")
     else:
-        print("No new files copied to main directory")
+        logging.warning("No new files copied to main directory")
 
 
 

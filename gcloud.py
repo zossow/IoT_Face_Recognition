@@ -30,7 +30,7 @@ class Storage:
         bucket = self.client.bucket(self.config.storageBucket)
         blob = bucket.blob(name)
         blob.download_to_filename(os.path.join(self.config.tmp_picture_folder, name))
-        print(f"{name} was successfully downloaded.")
+        logging.warning(f"{name} was successfully downloaded.")
 
 
 # if os.getenv("GOOGLE_APPLICATION_CREDENTIALS") is None:
