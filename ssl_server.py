@@ -47,7 +47,7 @@ class FaceRecognitionApp(threading.Thread):
         threading.Thread.__init__(self)
         self.qSocket = _qSocket
         self.qFirebase = _qFirebase
-        self.path_to_images = "tmp/Pictures"
+        self.path_to_images = "Pictures"
 
     def run(self):
         if os.path.exists('dumped_model.bin'):
