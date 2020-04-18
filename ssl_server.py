@@ -33,7 +33,6 @@ class FirebaseObserverApp(threading.Thread):
                 trigger.images_to_download(files_name)
                 # Bambiego Funckje
                 transfer_files_to_main_directory()
-                # TODO observer - jak beda nowe pliki to odpali ponizszy kod
                 print(datetime.datetime.now().strftime("%H:%M:%S"),
                       "Thread-FirebaseObserverApp: New pictures, letting now FaceRecognitionApp to create new model")
 

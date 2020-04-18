@@ -1,5 +1,6 @@
 import os
 import shutil
+import datetime
 from os import listdir
 
 from config import config
@@ -12,8 +13,12 @@ def transfer_files_to_main_directory():
     if compare:
         for image in compare:
             shutil.copy(os.path.join(config.tmp_picture_folder, image), config.main_picture_folder)
+        print(datetime.datetime.now().strftime("%H:%M:%S"),
+              "Thread-FirebaseObserverApp:")
         print(f"Files {compare} copied to main directory.")
     else:
+        print(datetime.datetime.now().strftime("%H:%M:%S"),
+              "Thread-FirebaseObserverApp:")
         print("No new files copied to main directory")
 
 

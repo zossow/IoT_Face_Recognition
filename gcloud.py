@@ -1,7 +1,7 @@
 import os
 from google.cloud import storage
 from config import config
-import logging
+import datetime
 
 
 class Storage:
@@ -18,10 +18,14 @@ class Storage:
         bucket = self.client.get_bucket(self.config.storageBucket)
         for file in self.get_list_of_files():
             image = bucket.get_blob(file)
+            print(datetime.datetime.now().strftime("%H:%M:%S"),
+                  "Thread-FirebaseObserverApp:")
             print(f"Download {file}")
             try:
                 image.download_to_filename(os.path.join(self.config.picture_folder, file))
             except FileNotFoundError:
+                print(datetime.datetime.now().strftime("%H:%M:%S"),
+                      "Thread-FirebaseObserverApp:")
                 print(f"Directory not exist. Create {self.config.picture_folder} ...")
                 os.makedirs(self.config.picture_folder)
                 image.download_to_filename(os.path.join(self.config.picture_folder, file))
@@ -30,6 +34,8 @@ class Storage:
         bucket = self.client.bucket(self.config.storageBucket)
         blob = bucket.blob(name)
         blob.download_to_filename(os.path.join(self.config.tmp_picture_folder, name))
+        print(datetime.datetime.now().strftime("%H:%M:%S"),
+              "Thread-FirebaseObserverApp:")
         print(f"{name} was successfully downloaded.")
 
 
