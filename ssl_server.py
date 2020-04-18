@@ -59,7 +59,11 @@ class FaceRecognitionApp(threading.Thread):
                 self.qSocket.put(model)
         else:
             print(datetime.datetime.now().strftime("%H:%M:%S"),
-                  "Thread-FaceRecognitionApp: No saved model on a server, waiting for pictures from DB")
+                  "Thread-FaceRecognitionApp: No saved model on a server, training new model")
+            model = self.encode()
+            print(datetime.datetime.now().strftime("%H:%M:%S"),
+                  "Thread-FaceRecognitionApp: Put new model to queue:", hashlib.sha224(model).hexdigest())
+            self.qSocket.put(model)
 
         while True:
             if self.qFirebase.empty():
@@ -69,7 +73,8 @@ class FaceRecognitionApp(threading.Thread):
 
             print(datetime.datetime.now().strftime("%H:%M:%S"),
                   "Thread-FaceRecognitionApp: Got signal from FirebaseObserverApp to train new model")
-            names, face_encodings = self.get_face_encodings(self.path_to_images)
+            model = self.encode()
+            '''names, face_encodings = self.get_face_encodings(self.path_to_images)
             print(datetime.datetime.now().strftime("%H:%M:%S"),
                   "Thread-FaceRecognitionApp: Training completed")
 
@@ -79,11 +84,25 @@ class FaceRecognitionApp(threading.Thread):
             print(datetime.datetime.now().strftime("%H:%M:%S"),
                   "Thread-FaceRecognitionApp: Saving model to: dumped_model.bin")
             with open('dumped_model.bin', 'wb') as fid:
-                pickle.dump(data, fid)
+                pickle.dump(data, fid)'''
 
             print(datetime.datetime.now().strftime("%H:%M:%S"),
                   "Thread-FaceRecognitionApp: Put new model to queue:", hashlib.sha224(model).hexdigest())
             self.qSocket.put(model)
+
+    def encode(self):
+        names, face_encodings = self.get_face_encodings(self.path_to_images)
+        print(datetime.datetime.now().strftime("%H:%M:%S"),
+              "Thread-FaceRecognitionApp: Training completed")
+
+        data = {"encodings": face_encodings, "names": names}
+        model = pickle.dumps(data)
+
+        print(datetime.datetime.now().strftime("%H:%M:%S"),
+              "Thread-FaceRecognitionApp: Saving model to: dumped_model.bin")
+        with open('dumped_model.bin', 'wb') as fid:
+            pickle.dump(data, fid)
+        return model
 
     def get_face_encodings(self, path_to_images):
         names = []
