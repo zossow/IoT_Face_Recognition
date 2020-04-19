@@ -31,8 +31,8 @@ def find_all_adding_img():
     list_firebase_img = parser_logs(result.decode())
     if list_firebase_img:
         pass
-        print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FirebaseObserverApp: New files uploaded to Firebase")
-        print(f"{list_firebase_img}")
+        #print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FirebaseObserverApp: New files uploaded to Firebase")
+        #print(f"{list_firebase_img}")
 
     else:
         pass
@@ -64,7 +64,7 @@ class TriggerFunction:
         images_in_firebase = self.storage.get_list_of_files()
         list_storage_img = find_all_adding_img()
         exist_images = [upload_img for upload_img in list_storage_img if upload_img in images_in_firebase]
-        print(f" te zdj istanieja w bazie {exist_images}")
+        # print(f" te zdj istanieja w bazie {exist_images}")
         return exist_images    
 
     def check_if_new_file(self):
