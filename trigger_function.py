@@ -27,13 +27,12 @@ def check_directory_exist(folder_name):
 def find_all_adding_img():
     print(datetime.datetime.now().strftime("%H:%M:%S"),
           "Thread-FirebaseObserverApp: Reading logs from Firebase")
-    result = subprocess.check_output(["gcloud", "functions", "logs", "read", "--limit", "60"])
+    result = subprocess.check_output(["gcloud", "functions", "logs", "read", "--limit", "1000"])
     list_firebase_img = parser_logs(result.decode())
     if list_firebase_img:
         pass
-        # print(datetime.datetime.now().strftime("%H:%M:%S"),
-        #      "Thread-FirebaseObserverApp: New files uploaded to Firebase")
-        # print(f"{list_firebase_img}")
+        print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FirebaseObserverApp: New files uploaded to Firebase")
+        print(f"{list_firebase_img}")
 
     else:
         pass
@@ -58,21 +57,29 @@ class TriggerFunction:
         self.storage = Storage()
 
     def local_list_of_img(self):
-        list_local_img = [img for img in listdir(self.config.tmp_picture_folder)]
+        list_local_img = [img for img in listdir(self.config.main_picture_folder)]
         return list_local_img
+
+    def check_if_img_still_exist_in_firebase(self):
+        images_in_firebase = self.storage.get_list_of_files()
+        list_storage_img = find_all_adding_img()
+        exist_images = [upload_img for upload_img in list_storage_img if upload_img in images_in_firebase]
+        print(f" te zdj istanieja w bazie {exist_images}")
+        return exist_images    
 
     def check_if_new_file(self):
         check_directory_exist(self.config.tmp_picture_folder)
-        list_storage_img = find_all_adding_img()
-        compare = [serv_files for serv_files in list_storage_img if serv_files not in self.local_list_of_img()]
+        exist_images_to_download = self.check_if_img_still_exist_in_firebase()
+        compare = [download_img for download_img in exist_images_to_download if download_img not in self.local_list_of_img()]
         if not compare:
-            #print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FirebaseObserverApp: Files exist in temporary directory")
+            # logging.warning("Files exist in main directory")
             return False, None
         else:
             print(datetime.datetime.now().strftime("%H:%M:%S"),
-		"Thread-FirebaseObserverApp: New files to download:")
+                  "Thread-FirebaseObserverApp: New files to download:")
             print(f"{compare}")
-            return True, compare
+
+        return True, compare
 
     def images_to_download(self, new_files):
         for _ in new_files:

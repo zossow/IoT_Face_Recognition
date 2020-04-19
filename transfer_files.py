@@ -21,6 +21,8 @@ def transfer_files_to_main_directory():
         print(datetime.datetime.now().strftime("%H:%M:%S"),
               "Thread-FirebaseObserverApp:")
         print("No new files copied to main directory")
-
+    filelist = [f for f in os.listdir(config.tmp_picture_folder) if f.endswith(".jpg")]
+    for f in filelist:
+        os.remove(os.path.join(config.tmp_picture_folder, f))
 
 

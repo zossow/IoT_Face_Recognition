@@ -9,10 +9,15 @@ class Storage:
         self.client = storage.Client()
         self.config = config
 
+
+
     def get_list_of_files(self):
+        new_list = []
         list_of_blobs = self.client.list_blobs(self.config.storageBucket)
         for blob in list_of_blobs:
-            yield blob.name
+            new_list.append(blob.name)
+        return new_list
+
 
     def download_all_img(self):
         bucket = self.client.get_bucket(self.config.storageBucket)
