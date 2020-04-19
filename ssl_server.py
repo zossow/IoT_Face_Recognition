@@ -43,6 +43,7 @@ class FirebaseObserverApp(threading.Thread):
                  but didn't started creating model yet. Don't have to said it again :)'''
                 if self.qFirebase.empty():
                     self.qFirebase.put(1)
+            time.sleep(120)
 
 
 class FaceRecognitionApp(threading.Thread):
