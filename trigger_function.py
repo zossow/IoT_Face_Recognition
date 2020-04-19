@@ -30,11 +30,13 @@ def find_all_adding_img():
     result = subprocess.check_output(["gcloud", "functions", "logs", "read", "--limit", "60"])
     list_firebase_img = parser_logs(result.decode())
     if list_firebase_img:
-        #print(datetime.datetime.now().strftime("%H:%M:%S"),
+        pass
+        # print(datetime.datetime.now().strftime("%H:%M:%S"),
         #      "Thread-FirebaseObserverApp: New files uploaded to Firebase")
-        #print(f"{list_firebase_img}")
+        # print(f"{list_firebase_img}")
 
     else:
+        pass
         """print(datetime.datetime.now().strftime("%H:%M:%S"),
                   "Thread-FirebaseObserverApp: No new files uploaded to Firebase")"""
     return list_firebase_img
