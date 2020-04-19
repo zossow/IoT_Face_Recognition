@@ -28,8 +28,8 @@ def random_rotate(img):
 
 transformations = {'horizontal flip': horizontal_flip,
                    'vertical flip': vertical_flip,
-                   'random noise': add_random_noise,
-                   'random rotate': random_rotate
+                   # 'random noise': add_random_noise,
+                   # 'random rotate': random_rotate
                    }
 
 
