@@ -46,7 +46,6 @@ def set_env():
         path_credential = "/root/iot-face-recognition-f4f53-firebase-adminsdk-e8ek4-dfb5eb4477.json"
         print(datetime.datetime.now().strftime("%H:%M:%S"),
               "Thread-FirebaseObserverApp: Set Environment Variable: GOOGLE_APPLICATION_CREDENTIALS")
-=======
         os.environ[
             "GOOGLE_APPLICATION_CREDENTIALS"] = path_credential
 
