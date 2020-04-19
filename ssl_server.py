@@ -14,6 +14,8 @@ import cv2
 import os
 import hashlib
 
+from config import config
+from image_augmentation import image_data_augmentation, transformations
 from transfer_files import transfer_files_to_main_directory
 from trigger_function import TriggerFunction, set_env
 
@@ -32,6 +34,7 @@ class FirebaseObserverApp(threading.Thread):
                 set_env()
                 trigger.images_to_download(files_name)
                 # Bambiego Funckje
+                image_data_augmentation(folder_with_images=config.tmp_picture_folder, transformations=transformations)
                 transfer_files_to_main_directory()
                 print(datetime.datetime.now().strftime("%H:%M:%S"),
                       "Thread-FirebaseObserverApp: New pictures, letting now FaceRecognitionApp to create new model")

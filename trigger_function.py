@@ -1,3 +1,4 @@
+import logging
 import os
 import re
 import subprocess
@@ -6,26 +7,27 @@ import datetime
 
 from config import config
 from gcloud import Storage
-from transfer_files import transfer_files_to_main_directory
 
+
+logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%m-%d-%Y %I:%M:%S')
 
 def parser_logs(output):
-    regex = r"File:\s(\D+_\d.j[a-z]?pg)"
-    all_img = re.findall(regex, output)
+    regex = r"File:\s([a-zA-Z]*_\d+.j[a-z]?pg)"
+    all_img = re.findall(regex, output, flags=re.IGNORECASE)
     list_img_witout_duplicates = list(dict.fromkeys(all_img))
     return list_img_witout_duplicates
 
 
 def check_directory_exist(folder_name):
     if not os.path.exists(folder_name):
-        print(f"Create directory {folder_name}")
+        logging.warning(f"Create directory {folder_name}")
         os.makedirs(folder_name)
 
 
 def find_all_adding_img():
     print(datetime.datetime.now().strftime("%H:%M:%S"),
           "Thread-FirebaseObserverApp: Reading logs from Firebase")
-    result = subprocess.check_output(["gcloud", "functions", "logs", "read", "--limit", "70"])
+    result = subprocess.check_output(["gcloud", "functions", "logs", "read", "--limit", "60"])
     list_firebase_img = parser_logs(result.decode())
     if list_firebase_img:
         print(datetime.datetime.now().strftime("%H:%M:%S"),
@@ -44,6 +46,7 @@ def set_env():
         path_credential = "/root/iot-face-recognition-f4f53-firebase-adminsdk-e8ek4-dfb5eb4477.json"
         print(datetime.datetime.now().strftime("%H:%M:%S"),
               "Thread-FirebaseObserverApp: Set Environment Variable: GOOGLE_APPLICATION_CREDENTIALS")
+=======
         os.environ[
             "GOOGLE_APPLICATION_CREDENTIALS"] = path_credential
 
