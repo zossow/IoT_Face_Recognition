@@ -30,9 +30,9 @@ def find_all_adding_img():
     result = subprocess.check_output(["gcloud", "functions", "logs", "read", "--limit", "60"])
     list_firebase_img = parser_logs(result.decode())
     if list_firebase_img:
-        print(datetime.datetime.now().strftime("%H:%M:%S"),
-              "Thread-FirebaseObserverApp: New files uploaded to Firebase")
-        print(f"{list_firebase_img}")
+        #print(datetime.datetime.now().strftime("%H:%M:%S"),
+        #      "Thread-FirebaseObserverApp: New files uploaded to Firebase")
+        #print(f"{list_firebase_img}")
 
     else:
         """print(datetime.datetime.now().strftime("%H:%M:%S"),
@@ -64,11 +64,11 @@ class TriggerFunction:
         list_storage_img = find_all_adding_img()
         compare = [serv_files for serv_files in list_storage_img if serv_files not in self.local_list_of_img()]
         if not compare:
-            # print("No new files to download")
+            #print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FirebaseObserverApp: Files exist in temporary directory")
             return False, None
         else:
             print(datetime.datetime.now().strftime("%H:%M:%S"),
-                  "Thread-FirebaseObserverApp: New files to download:")
+		"Thread-FirebaseObserverApp: New files to download:")
             print(f"{compare}")
             return True, compare
 

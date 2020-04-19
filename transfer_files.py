@@ -16,7 +16,7 @@ def transfer_files_to_main_directory():
             shutil.copy(os.path.join(config.tmp_picture_folder, image), config.main_picture_folder)
         print(datetime.datetime.now().strftime("%H:%M:%S"),
               "Thread-FirebaseObserverApp:")
-        print(f"Files {compare} copied to main directory.")
+        print(f" 	{len(compare)} files were copied to main directory. \n {compare}")
     else:
         print(datetime.datetime.now().strftime("%H:%M:%S"),
               "Thread-FirebaseObserverApp:")
