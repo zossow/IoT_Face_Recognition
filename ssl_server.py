@@ -13,6 +13,7 @@ import pickle
 import cv2
 import os
 import hashlib
+from tqdm import tqdm
 
 from config import config
 from image_augmentation import image_data_augmentation, transformations
@@ -112,7 +113,7 @@ class FaceRecognitionApp(threading.Thread):
         names = []
         face_encodings = []
 
-        for image_path in paths.list_images(path_to_images):
+        for image_path in tqdm(paths.list_images(path_to_images)):
             name = image_path.replace("_", os.path.sep).split(os.path.sep)[-2]
 
             image = cv2.imread(image_path)

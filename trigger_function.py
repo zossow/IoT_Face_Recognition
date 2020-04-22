@@ -27,7 +27,7 @@ def check_directory_exist(folder_name):
 def find_all_adding_img():
     print(datetime.datetime.now().strftime("%H:%M:%S"),
           "Thread-FirebaseObserverApp: Reading logs from Firebase")
-    result = subprocess.check_output(["gcloud", "functions", "logs", "read", "--limit", "1000"])
+    result = subprocess.check_output(["gcloud", "functions", "logs", "read", "--limit", "100"])
     list_firebase_img = parser_logs(result.decode())
     if list_firebase_img:
         pass
