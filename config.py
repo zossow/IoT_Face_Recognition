@@ -10,7 +10,6 @@ config = FirebaseConfig(
     appId="1:144714475977:web:1ebef2721097f8ecd06018",
     measurementId="G-E3987SDDD4",
     tmp_picture_folder="/root/IoT_Face_Recognition/tmp/Pictures",
-    # tmp_picture_folder="tmp/Pictures",
-    # main_picture_folder="Pictures"
+    path_credential="/root/iot-face-recognition-f4f53-firebase-adminsdk-e8ek4-dfb5eb4477.json",
     main_picture_folder='/root/IoT_Face_Recognition/Pictures'
 )

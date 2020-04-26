@@ -31,8 +31,6 @@ def find_all_adding_img():
     list_firebase_img = parser_logs(result.decode())
     if list_firebase_img:
         pass
-        #print(datetime.datetime.now().strftime("%H:%M:%S"), "Thread-FirebaseObserverApp: New files uploaded to Firebase")
-        #print(f"{list_firebase_img}")
 
     else:
         pass
@@ -41,10 +39,9 @@ def find_all_adding_img():
     return list_firebase_img
 
 
-def set_env():
+def set_env(path_credential):
     if os.getenv("GOOGLE_APPLICATION_CREDENTIALS") is None:
-        # path_credential = "/home/wiola/Pobrane/iot-face-recognition-f4f53-firebase-adminsdk-e8ek4-dfb5eb4477.json"
-        path_credential = "/root/iot-face-recognition-f4f53-firebase-adminsdk-e8ek4-dfb5eb4477.json"
+
         print(datetime.datetime.now().strftime("%H:%M:%S"),
               "Thread-FirebaseObserverApp: Set Environment Variable: GOOGLE_APPLICATION_CREDENTIALS")
         os.environ[
@@ -64,8 +61,7 @@ class TriggerFunction:
         images_in_firebase = self.storage.get_list_of_files()
         list_storage_img = find_all_adding_img()
         exist_images = [upload_img for upload_img in list_storage_img if upload_img in images_in_firebase]
-        # print(f" te zdj istanieja w bazie {exist_images}")
-        return exist_images    
+        return exist_images
 
     def check_if_new_file(self):
         check_directory_exist(self.config.tmp_picture_folder)

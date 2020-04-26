@@ -28,15 +28,16 @@ class FirebaseObserverApp(threading.Thread):
 
     def run(self):
         while True:
-            set_env()
+            set_env(config.path_credential)
             trigger = TriggerFunction()
             bool_value, files_name = trigger.check_if_new_file()
             if bool_value:
-                set_env()
                 trigger.images_to_download(files_name)
-                # Bambiego Funckje
+
                 image_data_augmentation(folder_with_images=config.tmp_picture_folder, transformations=transformations)
+
                 transfer_files_to_main_directory()
+
                 print(datetime.datetime.now().strftime("%H:%M:%S"),
                       "Thread-FirebaseObserverApp: New pictures, letting now FaceRecognitionApp to create new model")
 
